@@ -4,6 +4,8 @@ import Layout from './layouts/Layout'
 import AuthLayout from './layouts/AuthLayout'
 // Importamos las vistas
 import Inicio from './views/Inicio'
+import Login from './views/auth/Login'
+import Registro from './views/auth/Registro'
 const router = createBrowserRouter([
     {
         path: '/',
@@ -19,6 +21,16 @@ const router = createBrowserRouter([
     {
         path: '/auth',
         element: <AuthLayout />,
+        children: [
+            {
+                path: '/auth/login',
+                element: <Login />
+            },
+            {
+                path: '/auth/registro',
+                element: <Registro />
+            },
+        ]
     },
 ])
 // Exportamos el router 
