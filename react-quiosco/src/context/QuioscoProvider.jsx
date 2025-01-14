@@ -1,5 +1,7 @@
 // Importamos el context
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
+// Importamos toastify
+import { toast } from 'react-toastify'
 // Importamos las categorias
 import { categorias as categoriasDB } from "../data/categorias"
 // Creamos el context
@@ -15,6 +17,14 @@ const QuioscoProvider = ({ children }) => {
     const [producto, setProducto] = useState({})
     // Pedido
     const [pedido, setPedido] = useState([])
+    // Total
+    const [total, setTotal] = useState(0)
+
+    // UseEffect para calcular el total
+    useEffect(() => {
+        const nuevoTotal = pedido.reduce((total, producto) => (producto.precio * producto.cantidad) + total, 0)
+        setTotal(nuevoTotal)
+    },[pedido])
     // Funcion para cuando se cambia la categoria
     const handleClickCategoria = id =>{
         // Filtrar categorias por id 
@@ -34,8 +44,38 @@ const QuioscoProvider = ({ children }) => {
     }
 
     // Funcion para el pedido
-    const handleAgregarPedido = ({categoria_id, imagen, ...producto}) => {
-        setPedido([...pedido, producto])
+    const handleAgregarPedido = ({categoria_id, ...producto}) => {
+        // Comprobar si el producto ya existe
+        const existe = pedido.some(pedidoState => pedidoState.id === producto.id)
+        if (existe) {
+            // Actualizar la cantidad
+            const pedidoActualizado = pedido.map(pedidoState => pedidoState.id === producto.id ? producto : pedidoState)
+            // Actualizar el state
+            setPedido(pedidoActualizado)
+            toast.success('Pedido actualizado')
+        }else{
+            // Nuevo producto
+            setPedido([...pedido, producto])
+            // Toastify
+            toast.success('Agregado al pedido')
+        }
+        
+    }
+
+    // Funcion para editar la cantidad
+    const handleEditProducto = id => {
+        const productoActualizar = pedido.filter(producto => producto.id === id)[0]
+        setProducto(productoActualizar)
+        // Abrir el modal
+        setModal(!modal)
+    }
+
+    // Funcion para eliminar un producto del pedido
+    const handleEliminarProductoPedido = id => {
+        const pedidoActualizado = pedido.filter(producto => producto.id !== id)
+        setPedido(pedidoActualizado)
+        // Toastify
+        toast.success('Producto eliminado')
     }
     return (
         <QuioscoContext.Provider
@@ -48,7 +88,10 @@ const QuioscoProvider = ({ children }) => {
                 producto,
                 handleSetProducto,
                 pedido,
-                handleAgregarPedido
+                handleAgregarPedido,
+                handleEditProducto,
+                handleEliminarProductoPedido,
+                total
             }}
         >
             {children}

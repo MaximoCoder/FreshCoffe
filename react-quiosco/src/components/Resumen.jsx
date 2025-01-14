@@ -1,9 +1,14 @@
 // Importamos el hook
 import useQuiosco from '../hooks/useQuiosco'
-
+// Importamos el helper
+import { formatearDinero } from '../helpers'
+// Importamos el componente
 import ResumenProducto from './ResumenProducto'
 export default function Resumen() {
-  const { pedido } = useQuiosco()
+  const { pedido, total } = useQuiosco()
+
+  // Funcion para ocultar el boton de confirmar pedido
+  const comprobarPedido = () => pedido.length === 0
   return (
     <aside className="w-72 h-screen overflow-y-scroll p-5">
       <h1 className="text-4xl font-black">Mi Pedido</h1>
@@ -19,15 +24,22 @@ export default function Resumen() {
           ))
         )}
       </div>
-      <p className='text-xl mt-10'>Total a pagar:{''}</p>
+      <p className='text-xl mt-10'>
+        Total a pagar:{''}
+        {formatearDinero(total)}
+      </p>
 
       <form action="" className='w-full '>
         <div className='mt-5'>
+  
           <input
             type="submit"
             value='Confirmar Pedido'
-            className='bg-indigo-600 hover:bg-indigo-800 w-full p-3 uppercase font-bold text-white cursor-pointer'
-
+            className={`${comprobarPedido() ? 
+            'bg-indigo-100 cursor-not-allowed' :
+            'bg-indigo-600 hover:bg-indigo-800'}
+             w-full p-3 uppercase font-bold text-white cursor-pointer`}
+            disabled={comprobarPedido()}
           />
         </div>
       </form>

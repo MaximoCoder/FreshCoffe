@@ -1,15 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 // Importamos el hook
 import useQuiosco from '../hooks/useQuiosco'
 // Importamos el helper
 import { formatearDinero } from '../helpers'
 export default function ModalProducto() {
-    const { producto, handleClickModal, handleAgregarPedido } = useQuiosco()
+    const { producto, handleClickModal, handleAgregarPedido, pedido } = useQuiosco()
 
     // Cantidad
     const [cantidad, setCantidad] = useState(1)
+    // Pedido
+    const [edit, setEdit] = useState(false)
     // Calcular el precio basado en la cantidad
     const precio = formatearDinero(producto.precio * cantidad)
+
+    // UseEffect para el pedido
+    useEffect(() => {
+        if (pedido.some(pedidoState => pedidoState.id === producto.id)) {
+            const productoEdit = pedido.filter(pedidoState => pedidoState.id === producto.id)[0]
+
+            setCantidad(productoEdit.cantidad)
+            setEdit(true)
+        }
+    }, [pedido])
     return (
         <div className='md:flex gap-10'>
             <div className='md:w-1/3'>
@@ -63,7 +75,7 @@ export default function ModalProducto() {
                         handleClickModal()
                     }}
                 >
-                    Añadir al pedido
+                    {edit ? 'Guardar cambios' : 'Añadir al pedido'}
                 </button>
             </div>
         </div>

@@ -2,6 +2,9 @@
 import { Outlet } from 'react-router-dom'
 // Importamos react-modal
 import Modal from 'react-modal'
+// Importamos Toastify
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 // Importamos el hook
 import useQuiosco from '../hooks/useQuiosco'
 // Importamos los componentes
@@ -43,6 +46,7 @@ export default function Layout() {
         <ModalProducto />
       </Modal>
 
+      <ToastContainer />
     </>
   )
 }
