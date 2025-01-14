@@ -2,15 +2,15 @@
 import { createContext, useState, useEffect } from 'react'
 // Importamos toastify
 import { toast } from 'react-toastify'
-// Importamos las categorias
-import { categorias as categoriasDB } from "../data/categorias"
+// Importamos el cliente axios
+import clienteAxios from '../config/axios'
 // Creamos el context
 const QuioscoContext = createContext()
 const QuioscoProvider = ({ children }) => {
 
-    const [categorias, setCategorias] = useState(categoriasDB);
+    const [categorias, setCategorias] = useState([]);
     // Categoria actual
-    const [categoriaActual, setCategoriaActual] = useState(categorias[0])
+    const [categoriaActual, setCategoriaActual] = useState({})
     // Modal
     const [modal, setModal] = useState(false)
     // Productos
@@ -25,6 +25,22 @@ const QuioscoProvider = ({ children }) => {
         const nuevoTotal = pedido.reduce((total, producto) => (producto.precio * producto.cantidad) + total, 0)
         setTotal(nuevoTotal)
     },[pedido])
+    // OBTENER LAS CATEGORIAS DE LA API
+    const obtenerCategorias = async () => {
+        try {
+            const { data } = await clienteAxios('/api/categorias')
+            setCategorias(data.data)
+            // Categoria actual
+            setCategoriaActual(data.data[0])
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // Cargar las categorias
+    useEffect(() => {
+        obtenerCategorias()
+    })
     // Funcion para cuando se cambia la categoria
     const handleClickCategoria = id =>{
         // Filtrar categorias por id 
