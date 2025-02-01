@@ -2,8 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\CategoriaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,12 +16,18 @@ use App\Http\Controllers\ProductoController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-// RUTAS PRIVADAS
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// RUTAS PRIVADAS ( Necesitas estar logueado )
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::post('logout', [AuthController::class, 'logout']);
 });
 // Categorias
 Route::apiResource('/categorias', CategoriaController::class);
 // Productos
 Route::apiResource('/productos', ProductoController::class);
 
+// Autenticacion
+Route::post('registro', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
