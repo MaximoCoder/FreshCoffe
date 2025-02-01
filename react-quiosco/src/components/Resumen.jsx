@@ -5,8 +5,12 @@ import { formatearDinero } from '../helpers'
 // Importamos el componente
 import ResumenProducto from './ResumenProducto'
 export default function Resumen() {
-  const { pedido, total } = useQuiosco()
+  const { pedido, total, handleSubmitNuevaOrden } = useQuiosco()
 
+  const handleSubmit = e => {
+    e.preventDefault()
+    handleSubmitNuevaOrden()
+  }
   // Funcion para ocultar el boton de confirmar pedido
   const comprobarPedido = () => pedido.length === 0
   return (
@@ -29,7 +33,9 @@ export default function Resumen() {
         {formatearDinero(total)}
       </p>
 
-      <form action="" className='w-full '>
+      <form action="" className='w-full '
+        onSubmit={handleSubmit}
+      >
         <div className='mt-5'>
   
           <input

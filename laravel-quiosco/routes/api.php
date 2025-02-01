@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\PedidoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,8 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::post('logout', [AuthController::class, 'logout']);
+    // Almacenar ordenes
+    Route::apiResource('/pedidos', PedidoController::class);
 });
 // Categorias
 Route::apiResource('/categorias', CategoriaController::class);
