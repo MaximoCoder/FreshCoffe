@@ -27,8 +27,9 @@ const QuioscoProvider = ({ children }) => {
     },[pedido])
     // OBTENER LAS CATEGORIAS DE LA API
     const obtenerCategorias = async () => {
+        const token = localStorage.getItem('AUTH_TOKEN')
         try {
-            const { data } = await clienteAxios('/api/categorias')
+            const { data } = await clienteAxios('/api/categorias', {headers: {Authorization: `Bearer ${token}`}})
             setCategorias(data.data)
             // Categoria actual
             setCategoriaActual(data.data[0])
@@ -40,7 +41,7 @@ const QuioscoProvider = ({ children }) => {
     // Cargar las categorias
     useEffect(() => {
         obtenerCategorias()
-    })
+    }, [])
     // Funcion para cuando se cambia la categoria
     const handleClickCategoria = id =>{
         // Filtrar categorias por id 
@@ -121,6 +122,44 @@ const QuioscoProvider = ({ children }) => {
             console.log(error)
         }
     }
+
+    // Funcion para completar el pedido
+    const handleClickCompletarPedido = async id =>{
+        // Obtenemos el token del localStorage
+        const token = localStorage.getItem('AUTH_TOKEN')
+
+        try {
+            await clienteAxios.put(`/api/pedidos/${id}`, null, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            // Toastify
+            toast.success('Pedido completado')
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // Funcion para poner un producto como agotado
+    const handleClickProductoAgotado = async id =>{
+        // Obtenemos el token del localStorage
+        const token = localStorage.getItem('AUTH_TOKEN')
+
+        try {
+            await clienteAxios.put(`/api/productos/${id}`, null, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            // Toastify
+            toast.success('Pedido completado')
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <QuioscoContext.Provider
             value={{
@@ -136,7 +175,9 @@ const QuioscoProvider = ({ children }) => {
                 handleEditProducto,
                 handleEliminarProductoPedido,
                 total,
-                handleSubmitNuevaOrden
+                handleSubmitNuevaOrden,
+                handleClickCompletarPedido,
+                handleClickProductoAgotado
             }}
         >
             {children}

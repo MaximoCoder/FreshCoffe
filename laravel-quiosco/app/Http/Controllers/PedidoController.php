@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pedido;
-use App\Models\PedidoProducto;
 use Carbon\Carbon;
+use App\Models\Pedido;
 use Illuminate\Http\Request;
+use App\Models\PedidoProducto;
+use App\Http\Resources\PedidoCollection;
 
 class PedidoController extends Controller
 {
@@ -14,7 +15,8 @@ class PedidoController extends Controller
      */
     public function index()
     {
-        //
+        // Retornamos todos los pedidos pendientes
+        return new PedidoCollection(Pedido::with('user')->with('productos')->where('estado', 0)->get());
     }
 
     /**
@@ -65,7 +67,13 @@ class PedidoController extends Controller
      */
     public function update(Request $request, Pedido $pedido)
     {
-        //
+        // cambiamos el estado del pedido
+        $pedido->estado = 1;
+        $pedido->save();
+
+        return [
+            'pedido' => $pedido
+        ];
     }
 
     /**

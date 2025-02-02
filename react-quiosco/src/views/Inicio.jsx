@@ -7,7 +7,7 @@ import clienteAxios from '../config/axios'
 export default function Inicio() {
   const { categoriaActual } = useQuiosco()
   // Consulta SWR
-  const fetcher = () => clienteAxios('/api/productos').then(data => data.data)
+  const fetcher = () => clienteAxios('/api/productos', { headers: { Authorization: `Bearer ${localStorage.getItem('AUTH_TOKEN')}` } }).then(data => data.data)
   const { data, isLoading } = useSWR('/api/productos', fetcher,{
     refreshInterval: 1000
   })
@@ -25,6 +25,7 @@ export default function Inicio() {
           <Producto 
             key={producto.imagen}
             producto={producto}
+            botonAgregar={true}
           />
         ))}
       </div>

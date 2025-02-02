@@ -41,7 +41,11 @@ class ProductoController extends Controller
      */
     public function update(Request $request, Producto $producto)
     {
-        //
+        // Actualizar la disponibilidad del producto
+        $producto->disponible = 0;
+        $producto->save();
+        // Devolver la respuesta
+        return ['producto' => $producto];
     }
 
     /**
